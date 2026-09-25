@@ -2,6 +2,20 @@ import React, { useState } from 'react';
 import Sidebar from './components/layout/Sidebar';
 import TopBar from './components/layout/TopBar';
 import KitchenDashboard from './components/views/KitchenDashboard';
+import AiMenuPlanner from './components/views/AiMenuPlanner';
+import StockAndExpiry from './components/views/StockAndExpiry';
+import RedistributionHub from './components/views/RedistributionHub';
+import KitchenSettings from './components/views/KitchenSettings';
+import LoadCellWasteLog from './components/views/LoadCellWasteLog';
+import LiveSurplusMap from './components/views/LiveSurplusMap';
+import PickupHistory from './components/views/PickupHistory';
+import CommunityImpact from './components/views/CommunityImpact';
+import WasteAnalytics from './components/views/WasteAnalytics';
+import RootCauseAutopsy from './components/views/RootCauseAutopsy';
+import AdminPartnerNetwork from './components/views/AdminPartnerNetwork';
+import AdminEsgCompliance from './components/views/AdminEsgCompliance';
+import AdminSettings from './components/views/AdminSettings';
+import NgoSettings from './components/views/NgoSettings';
 import NgoDashboard from './components/views/NgoDashboard';
 import AdminDashboard from './components/views/AdminDashboard';
 import { mockData } from './data/mockData';
@@ -12,6 +26,7 @@ export default function App() {
   const [role, setRole] = useState('kitchen'); // 'kitchen' | 'ngo' | 'admin'
   const [activeNav, setActiveNav] = useState('home');
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [kitchenData, setKitchenData] = useState(mockData.kitchen);
 
   // Switch role helper
   const handleRoleChange = (newRole) => {
@@ -19,12 +34,36 @@ export default function App() {
     setActiveNav('home');
   };
 
+  // Sync accepted dish from AI Menu Planner to Kitchen Dashboard
+  const handleAcceptDishToKitchen = (newDish) => {
+    setKitchenData((prev) => {
+      const exists = prev.menuSuggestions.some((d) => d.id === newDish.id);
+      const updatedSuggestions = exists
+        ? prev.menuSuggestions.map((d) =>
+            d.id === newDish.id ? { ...d, status: 'accepted' } : d
+          )
+        : [{ ...newDish, status: 'accepted' }, ...prev.menuSuggestions];
+
+      return {
+        ...prev,
+        menuSuggestions: updatedSuggestions,
+      };
+    });
+  };
+
+  // Sync inventory changes from Stock & Expiry module
+  const handleUpdateInventory = (newInventory) => {
+    setKitchenData((prev) => ({
+      ...prev,
+      inventory: newInventory,
+    }));
+  };
+
   return (
     <div className="min-h-screen bg-app flex text-content-primary">
       {/* Fixed Left Sidebar */}
       <Sidebar
         role={role}
-        setRole={handleRoleChange}
         activeNav={activeNav}
         setActiveNav={setActiveNav}
         isOpen={sidebarOpen}
@@ -73,45 +112,116 @@ export default function App() {
                 </p>
               </div>
             </div>
-
-            {/* Quick Switch Buttons right inside banner */}
-            <div className="flex items-center gap-2 flex-wrap">
-              <span className="text-xs font-semibold text-content-muted hidden sm:inline">Switch Role:</span>
-              <button
-                onClick={() => handleRoleChange('kitchen')}
-                className={`text-xs px-3 py-1.5 rounded-lg font-medium transition-all ${
-                  role === 'kitchen' ? 'bg-brand text-white font-bold shadow-xs' : 'bg-slate-100 text-content-secondary hover:bg-slate-200'
-                }`}
-              >
-                Kitchen
-              </button>
-              <button
-                onClick={() => handleRoleChange('ngo')}
-                className={`text-xs px-3 py-1.5 rounded-lg font-medium transition-all ${
-                  role === 'ngo' ? 'bg-info text-white font-bold shadow-xs' : 'bg-slate-100 text-content-secondary hover:bg-slate-200'
-                }`}
-              >
-                NGO
-              </button>
-              <button
-                onClick={() => handleRoleChange('admin')}
-                className={`text-xs px-3 py-1.5 rounded-lg font-medium transition-all ${
-                  role === 'admin' ? 'bg-purple-600 text-white font-bold shadow-xs' : 'bg-slate-100 text-content-secondary hover:bg-slate-200'
-                }`}
-              >
-                Admin
-              </button>
-            </div>
           </div>
 
           {/* Conditional Navigation Views */}
-          {activeNav === 'home' ? (
-            role === 'kitchen' ? (
-              <KitchenDashboard data={mockData.kitchen} />
+          {activeNav === 'menu' ? (
+            <AiMenuPlanner
+              kitchenData={kitchenData}
+              onAcceptDishToKitchen={handleAcceptDishToKitchen}
+              onNavigateHome={() => setActiveNav('home')}
+            />
+          ) : activeNav === 'inventory' ? (
+            <StockAndExpiry
+              inventoryData={kitchenData?.inventory}
+              onNavigateToPlanner={() => setActiveNav('menu')}
+              onNavigateHome={() => setActiveNav('home')}
+              onUpdateInventory={handleUpdateInventory}
+            />
+          ) : activeNav === 'redistribution' ? (
+            <RedistributionHub
+              redistributionData={kitchenData?.redistribution}
+              onNavigateHome={() => setActiveNav('home')}
+              onNavigateToNgo={() => handleRoleChange('ngo')}
+              onUpdateDispatches={(newDispatches) => {
+                setKitchenData((prev) => ({
+                  ...prev,
+                  redistribution: {
+                    ...prev.redistribution,
+                    dispatches: newDispatches,
+                  },
+                }));
+              }}
+            />
+          ) : activeNav === 'waste' ? (
+            <LoadCellWasteLog
+              wasteData={kitchenData}
+              onNavigateHome={() => setActiveNav('home')}
+              onNavigateToPlanner={() => setActiveNav('menu')}
+            />
+          ) : activeNav === 'settings' ? (
+            role === 'admin' ? (
+              <AdminSettings
+                onNavigateHome={() => setActiveNav('home')}
+              />
             ) : role === 'ngo' ? (
-              <NgoDashboard data={mockData.ngo} />
+              <NgoSettings
+                onNavigateHome={() => setActiveNav('home')}
+              />
             ) : (
-              <AdminDashboard data={mockData.admin} />
+              <KitchenSettings
+                onNavigateHome={() => setActiveNav('home')}
+              />
+            )
+          ) : activeNav === 'map' ? (
+            <LiveSurplusMap
+              ngoData={mockData.ngo}
+              onNavigateHome={() => setActiveNav('home')}
+            />
+          ) : activeNav === 'pickups' ? (
+            <PickupHistory
+              ngoData={mockData.ngo}
+              onNavigateHome={() => setActiveNav('home')}
+              onNavigateToMap={() => setActiveNav('map')}
+            />
+          ) : activeNav === 'impact' ? (
+            <CommunityImpact
+              ngoData={mockData.ngo}
+              onNavigateHome={() => setActiveNav('home')}
+              onNavigateToMap={() => setActiveNav('map')}
+              onNavigateToHistory={() => setActiveNav('pickups')}
+            />
+          ) : activeNav === 'analytics' ? (
+            <WasteAnalytics
+              adminData={mockData.admin}
+              onNavigateHome={() => setActiveNav('home')}
+            />
+          ) : activeNav === 'autopsy' ? (
+            <RootCauseAutopsy
+              adminData={mockData.admin}
+              onNavigateHome={() => setActiveNav('home')}
+              onNavigateToAnalytics={() => setActiveNav('analytics')}
+            />
+          ) : activeNav === 'partners' ? (
+            <AdminPartnerNetwork
+              adminData={mockData.admin}
+              onNavigateHome={() => setActiveNav('home')}
+              onNavigateToMap={() => {
+                setRole('ngo');
+                setActiveNav('map');
+              }}
+            />
+          ) : activeNav === 'esg' ? (
+            <AdminEsgCompliance
+              adminData={mockData.admin}
+              onNavigateHome={() => setActiveNav('home')}
+            />
+          ) : activeNav === 'home' ? (
+            role === 'kitchen' ? (
+              <KitchenDashboard
+                data={kitchenData}
+                onNavigate={(nav) => setActiveNav(nav)}
+              />
+            ) : role === 'ngo' ? (
+              <NgoDashboard
+                data={mockData.ngo}
+                onNavigate={(nav) => setActiveNav(nav)}
+              />
+            ) : (
+              <AdminDashboard
+                data={mockData.admin}
+                onNavigate={(nav) => setActiveNav(nav)}
+              />
             )
           ) : (
             /* Sub-navigation placeholder view */

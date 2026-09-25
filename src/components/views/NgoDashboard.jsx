@@ -26,7 +26,7 @@ import Button from '../common/Button';
 import DataTable from '../common/DataTable';
 import AlertCard from '../common/AlertCard';
 
-export default function NgoDashboard({ data }) {
+export default function NgoDashboard({ data, onNavigate }) {
   const [alerts, setAlerts] = useState(data.alerts);
   const [activePickup, setActivePickup] = useState(data.initialActivePickup);
   const [history, setHistory] = useState(data.history);
@@ -370,9 +370,20 @@ export default function NgoDashboard({ data }) {
                   NGO Hub Location: Rainbow Children Shelter
                 </span>
               </div>
-              <span className="text-[11px] font-medium text-content-secondary bg-slate-100 px-2 py-0.5 rounded-md">
-                Radius: 5.0 km
-              </span>
+              <div className="flex items-center gap-2">
+                <span className="text-[11px] font-medium text-content-secondary bg-slate-100 px-2 py-0.5 rounded-md">
+                  Radius: 5.0 km
+                </span>
+                <Button
+                  size="sm"
+                  variant="secondary"
+                  icon={MapPin}
+                  onClick={() => onNavigate?.('map')}
+                  className="text-xs py-1 px-2.5 h-auto whitespace-nowrap"
+                >
+                  Full Radar ↗
+                </Button>
+              </div>
             </div>
 
             {/* Central NGO Base Marker */}
@@ -462,16 +473,29 @@ export default function NgoDashboard({ data }) {
 
       {/* 6.5 Section — Impact Snapshot (Soft green tinted row) */}
       <div className="p-6 rounded-card bg-success-light/50 border border-success/30 shadow-soft">
-        <div className="flex items-center justify-between mb-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
           <div className="flex items-center gap-2">
             <Sparkles className="w-5 h-5 text-success" />
             <h3 className="font-bold text-content-primary text-base">
               Cumulative Community Impact Snapshot
             </h3>
           </div>
-          <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-white text-success border border-success/30">
-            September 2026
-          </span>
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-white text-success border border-success/30">
+              September 2026
+            </span>
+            {onNavigate && (
+              <Button
+                variant="secondary"
+                size="sm"
+                icon={ArrowRight}
+                onClick={() => onNavigate('impact')}
+                className="text-xs py-1 px-2.5 h-auto"
+              >
+                Full ESG Analytics ↗
+              </Button>
+            )}
+          </div>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -515,11 +539,24 @@ export default function NgoDashboard({ data }) {
 
       {/* 6.4 Section — Pickup History Table */}
       <div className="bg-surface rounded-card p-5 md:p-6 shadow-soft border border-divider/60">
-        <SectionHeader
-          icon={Users}
-          title="Pickup & Delivery History"
-          subtitle="Audit-ready logs of surplus collection and beneficiary deliveries"
-        />
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+          <SectionHeader
+            icon={Users}
+            title="Pickup & Delivery History"
+            subtitle="Audit-ready logs of surplus collection and beneficiary deliveries"
+          />
+          {onNavigate && (
+            <Button
+              variant="secondary"
+              size="sm"
+              icon={ArrowRight}
+              onClick={() => onNavigate('pickups')}
+              className="self-start sm:self-auto shrink-0"
+            >
+              Full Ledger & FSSAI Slips
+            </Button>
+          )}
+        </div>
 
         <DataTable
           columns={historyColumns}

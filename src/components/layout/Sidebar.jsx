@@ -22,7 +22,6 @@ import {
 
 export default function Sidebar({
   role,
-  setRole,
   activeNav,
   setActiveNav,
   isOpen,
@@ -165,64 +164,10 @@ export default function Sidebar({
           </div>
         </div>
 
-        {/* Bottom Section: Role Switcher & Active Persona */}
+        {/* Bottom Section: Active Persona from frontend-changes branch */}
         <div className="p-3 border-t border-divider bg-slate-50/60">
-          <div className="mb-2.5 px-2 flex items-center justify-between">
-            <span className="text-[11px] font-semibold uppercase tracking-wider text-content-muted">
-              Role Switcher (Demo)
-            </span>
-          </div>
-
-          {/* 3-Way Role Switcher Control */}
-          <div className="grid grid-cols-1 gap-1.5 p-1 bg-white rounded-xl border border-divider shadow-soft-sm">
-            <button
-              onClick={() => {
-                setRole('kitchen');
-                setActiveNav('home');
-              }}
-              className={`flex items-center justify-between px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all ${
-                role === 'kitchen'
-                  ? 'bg-brand-light text-brand font-semibold shadow-xs'
-                  : 'text-content-secondary hover:text-content-primary hover:bg-slate-50'
-              }`}
-            >
-              <span>1. Kitchen Manager</span>
-              {role === 'kitchen' && <span className="w-1.5 h-1.5 rounded-full bg-brand" />}
-            </button>
-
-            <button
-              onClick={() => {
-                setRole('ngo');
-                setActiveNav('home');
-              }}
-              className={`flex items-center justify-between px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all ${
-                role === 'ngo'
-                  ? 'bg-info-light text-info font-semibold shadow-xs'
-                  : 'text-content-secondary hover:text-content-primary hover:bg-slate-50'
-              }`}
-            >
-              <span>2. NGO Coordinator</span>
-              {role === 'ngo' && <span className="w-1.5 h-1.5 rounded-full bg-info" />}
-            </button>
-
-            <button
-              onClick={() => {
-                setRole('admin');
-                setActiveNav('home');
-              }}
-              className={`flex items-center justify-between px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all ${
-                role === 'admin'
-                  ? 'bg-purple-100 text-purple-700 font-semibold shadow-xs'
-                  : 'text-content-secondary hover:text-content-primary hover:bg-slate-50'
-              }`}
-            >
-              <span>3. Institution Admin</span>
-              {role === 'admin' && <span className="w-1.5 h-1.5 rounded-full bg-purple-600" />}
-            </button>
-          </div>
-
           {/* Persona Card */}
-          <div className="mt-2.5 p-2 rounded-xl bg-white border border-divider/70 flex items-center gap-2.5">
+          <div className="p-2 rounded-xl bg-white border border-divider/70 flex items-center gap-2.5">
             <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs ${roleInfo[role]?.avatarBg}`}>
               {role === 'kitchen' ? 'KM' : role === 'ngo' ? 'NC' : 'IA'}
             </div>
