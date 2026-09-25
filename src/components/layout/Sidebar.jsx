@@ -164,7 +164,7 @@ export default function Sidebar({
           </div>
         </div>
 
-        {/* Bottom Section: Active Persona from frontend-changes branch */}
+        {/* Bottom Section: Active Persona */}
         <div className="p-3 border-t border-divider bg-slate-50/60">
           {/* Persona Card */}
           <div className="p-2 rounded-xl bg-white border border-divider/70 flex items-center gap-2.5">

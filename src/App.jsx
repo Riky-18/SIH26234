@@ -28,7 +28,6 @@ export default function App() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [kitchenData, setKitchenData] = useState(mockData.kitchen);
 
-  // Switch role helper
   const handleRoleChange = (newRole) => {
     setRole(newRole);
     setActiveNav('home');

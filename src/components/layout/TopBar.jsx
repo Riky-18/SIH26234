@@ -67,7 +67,7 @@ export default function TopBar({
           <span>IoT Sensors Live</span>
         </div>
 
-        {/* Single role switcher from frontend-changes branch */}
+        {/* Single role switcher */}
         <div className="hidden md:flex items-center gap-1 rounded-xl bg-slate-100 p-1 border border-divider text-xs">
           {[
             ['kitchen', 'Kitchen'],
