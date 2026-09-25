@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
   Trash2,
   AlertTriangle,
@@ -17,7 +17,8 @@ import {
   Flame,
   CheckCircle2,
   Share2,
-  Scale
+  Scale,
+  Package
 } from 'lucide-react';
 import {
   BarChart,
@@ -37,11 +38,17 @@ import ProgressBar from '../common/ProgressBar';
 import DataTable from '../common/DataTable';
 import ChartCard from '../common/ChartCard';
 
-export default function KitchenDashboard({ data }) {
+export default function KitchenDashboard({ data, onNavigate }) {
   const redistributionRef = useRef(null);
 
   // Local interactive states for demo
   const [menuItems, setMenuItems] = useState(data.menuSuggestions);
+
+  useEffect(() => {
+    if (data?.menuSuggestions) {
+      setMenuItems(data.menuSuggestions);
+    }
+  }, [data?.menuSuggestions]);
   const [inventorySearch, setInventorySearch] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('All');
   const [spoilageList, setSpoilageList] = useState(data.spoilageAlerts);
@@ -185,6 +192,16 @@ export default function KitchenDashboard({ data }) {
               title="Suggested Menu — Based on Expiring Stock"
               subtitle="AI recipes automatically generated to exhaust high-risk inventory before spoilage"
               badge={<StatusPill text="AI Recipe Match" level="brand" />}
+              actions={
+                <Button
+                  size="sm"
+                  variant="primary"
+                  icon={Sparkles}
+                  onClick={() => onNavigate?.('menu')}
+                >
+                  Launch Full AI Planner ✨
+                </Button>
+              }
             />
 
             <div className="space-y-3.5 mt-2">
@@ -288,6 +305,15 @@ export default function KitchenDashboard({ data }) {
                       className="pl-9 pr-3 py-1.5 text-xs rounded-xl border border-divider bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand/30 w-36 sm:w-44"
                     />
                   </div>
+                  <Button
+                    size="sm"
+                    variant="secondary"
+                    icon={Package}
+                    onClick={() => onNavigate?.('inventory')}
+                    className="whitespace-nowrap"
+                  >
+                    Open Stock Hub ↗
+                  </Button>
                 </div>
               }
             />
@@ -330,6 +356,17 @@ export default function KitchenDashboard({ data }) {
               title="Live Waste Feed"
               subtitle="IoT Smart Load Cell Bins (Automated Telemetry)"
               badge={<StatusPill text="Bin #A1 Online" level="success" dot={true} />}
+              actions={
+                <Button
+                  size="sm"
+                  variant="secondary"
+                  icon={Scale}
+                  onClick={() => onNavigate?.('waste')}
+                  className="whitespace-nowrap"
+                >
+                  Open Waste Log ↗
+                </Button>
+              }
             />
 
             {/* Circular Gauge / Radial progress display */}
@@ -488,6 +525,17 @@ export default function KitchenDashboard({ data }) {
               title="Redistribution Dispatch"
               subtitle="Instant transfer of clean prepared surplus to verified shelters"
               badge={<StatusPill text="Live Route" level="brand" />}
+              actions={
+                <Button
+                  size="sm"
+                  variant="secondary"
+                  icon={Share2}
+                  onClick={() => onNavigate?.('redistribution')}
+                  className="whitespace-nowrap"
+                >
+                  Open Redistribution Hub ↗
+                </Button>
+              }
             />
 
             {/* Surplus Ready Highlight Card */}
