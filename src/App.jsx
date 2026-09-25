@@ -13,7 +13,6 @@ export default function App() {
   const [activeNav, setActiveNav] = useState('home');
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  // Switch role helper
   const handleRoleChange = (newRole) => {
     setRole(newRole);
     setActiveNav('home');
@@ -24,7 +23,6 @@ export default function App() {
       {/* Fixed Left Sidebar */}
       <Sidebar
         role={role}
-        setRole={handleRoleChange}
         activeNav={activeNav}
         setActiveNav={setActiveNav}
         isOpen={sidebarOpen}
@@ -74,34 +72,6 @@ export default function App() {
               </div>
             </div>
 
-            {/* Quick Switch Buttons right inside banner */}
-            <div className="flex items-center gap-2 flex-wrap">
-              <span className="text-xs font-semibold text-content-muted hidden sm:inline">Switch Role:</span>
-              <button
-                onClick={() => handleRoleChange('kitchen')}
-                className={`text-xs px-3 py-1.5 rounded-lg font-medium transition-all ${
-                  role === 'kitchen' ? 'bg-brand text-white font-bold shadow-xs' : 'bg-slate-100 text-content-secondary hover:bg-slate-200'
-                }`}
-              >
-                Kitchen
-              </button>
-              <button
-                onClick={() => handleRoleChange('ngo')}
-                className={`text-xs px-3 py-1.5 rounded-lg font-medium transition-all ${
-                  role === 'ngo' ? 'bg-info text-white font-bold shadow-xs' : 'bg-slate-100 text-content-secondary hover:bg-slate-200'
-                }`}
-              >
-                NGO
-              </button>
-              <button
-                onClick={() => handleRoleChange('admin')}
-                className={`text-xs px-3 py-1.5 rounded-lg font-medium transition-all ${
-                  role === 'admin' ? 'bg-purple-600 text-white font-bold shadow-xs' : 'bg-slate-100 text-content-secondary hover:bg-slate-200'
-                }`}
-              >
-                Admin
-              </button>
-            </div>
           </div>
 
           {/* Conditional Navigation Views */}

@@ -67,32 +67,25 @@ export default function TopBar({
           <span>IoT Sensors Live</span>
         </div>
 
-        {/* Quick Role switcher chips on top bar for instant demo switching */}
-        <div className="hidden xl:flex items-center bg-slate-100 p-1 rounded-xl border border-divider text-xs">
-          <button
-            onClick={() => onRoleChange('kitchen')}
-            className={`px-3 py-1 rounded-lg font-medium transition-all ${
-              role === 'kitchen' ? 'bg-white text-brand shadow-xs font-semibold' : 'text-content-secondary hover:text-content-primary'
-            }`}
-          >
-            Kitchen
-          </button>
-          <button
-            onClick={() => onRoleChange('ngo')}
-            className={`px-3 py-1 rounded-lg font-medium transition-all ${
-              role === 'ngo' ? 'bg-white text-info shadow-xs font-semibold' : 'text-content-secondary hover:text-content-primary'
-            }`}
-          >
-            NGO
-          </button>
-          <button
-            onClick={() => onRoleChange('admin')}
-            className={`px-3 py-1 rounded-lg font-medium transition-all ${
-              role === 'admin' ? 'bg-white text-purple-700 shadow-xs font-semibold' : 'text-content-secondary hover:text-content-primary'
-            }`}
-          >
-            Admin
-          </button>
+        {/* Single role switcher */}
+        <div className="hidden md:flex items-center gap-1 rounded-xl bg-slate-100 p-1 border border-divider text-xs">
+          {[
+            ['kitchen', 'Kitchen'],
+            ['ngo', 'NGO'],
+            ['admin', 'Admin'],
+          ].map(([value, label]) => (
+            <button
+              key={value}
+              onClick={() => onRoleChange(value)}
+              className={`px-2.5 py-1 rounded-lg font-medium transition-all ${
+                role === value
+                  ? 'bg-white text-brand shadow-xs font-semibold'
+                  : 'text-content-secondary hover:text-content-primary'
+              }`}
+            >
+              {label}
+            </button>
+          ))}
         </div>
 
         {/* Notification Bell */}
